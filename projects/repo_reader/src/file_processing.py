@@ -96,7 +96,7 @@ def list_files(startpath):
             print('{}{}'.format(subindent, f))
 
 
-def print_github_repo_structure(repo_url):
+def get_github_repo_structure(repo_url):
     # Extract username and repository name from the URL
     parts = repo_url.strip('/').split('/')
     username = parts[-2]
@@ -110,18 +110,19 @@ def print_github_repo_structure(repo_url):
     if response.status_code == 200:
         repo_contents = response.json()
 
-        # Print the repository structure recursively
-        print(f"Repository Structure for {username}/{repo_name}:")
-        print_repo_contents(repo_contents, "")
-        
+        # Initialize a variable to hold the repository structure as a string
+        repo_structure = f"Repository Structure for {username}/{repo_name}:\n"
+        repo_structure += build_repo_structure(repo_contents, "")
+        return repo_structure
     else:
-        print(f"Failed to fetch repository contents. Status code: {response.status_code}")
+        return f"Failed to fetch repository contents. Status code: {response.status_code}"
 
-
-def print_repo_contents(contents, indent):
+def build_repo_structure(contents, indent):
+    repo_structure = ""
     for item in contents:
         if item['type'] == 'file':
-            print(f"{indent}- {item['name']}")
+            repo_structure += f"{indent}- {item['name']}\n"
         elif item['type'] == 'dir':
-            print(f"{indent}+ {item['name']}/")
-            print_repo_contents(item['contents'], indent + "  ")
+            repo_structure += f"{indent}+ {item['name']}/\n"
+            repo_structure += build_repo_structure(item['contents'], indent + "  ")
+    return repo_structure
