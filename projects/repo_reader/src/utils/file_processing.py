@@ -25,30 +25,32 @@ def load_and_index_files(repo_path):
     file_type_counts = {}
     documents_dict = {}
 
-    for ext in extensions:
-        glob_pattern = f'**/*.{ext}'
-        try:
-            loader = None
-            if ext == 'ipynb':
-                loader = NotebookLoader(str(repo_path), include_outputs=True, max_output_length=20, remove_newline=True)
-            else:
-                loader = DirectoryLoader(repo_path, glob=glob_pattern)
+    for root, _, files in os.walk(repo_path):
+        for file in files:
+            ext = file.split('.')[-1]
+            if ext in extensions:
+                file_path = os.path.relpath(os.path.join(root, file), repo_path)
+                try:
+                    loader = None
+                    if ext == 'ipynb':
+                        loader = NotebookLoader(str(file_path), include_outputs=True, max_output_length=20, remove_newline=True)
+                    else:
+                        loader = DirectoryLoader(repo_path, glob=f'./{file_path}')
 
-            loaded_documents = loader.load() if callable(loader.load) else []
-            if loaded_documents:
-                file_type_counts[ext] = len(loaded_documents)
-                for doc in loaded_documents:
-                    file_path = doc.metadata['source']
-                    relative_path = os.path.relpath(file_path, repo_path)
-                    file_id = str(uuid.uuid4())
-                    doc.metadata['source'] = relative_path
-                    doc.metadata['file_id'] = file_id
-                    # TODO add blurb to metadata using langchain_text_summarizers later
+                    loaded_documents = loader.load() if callable(loader.load) else []
+                    if loaded_documents:
+                        if ext not in file_type_counts:
+                            file_type_counts[ext] = 0
+                        file_type_counts[ext] += len(loaded_documents)
+                        for doc in loaded_documents:
+                            file_id = str(uuid.uuid4())
+                            doc.metadata['source'] = file_path
+                            doc.metadata['file_id'] = file_id
+                            # TODO add blurb to metadata using langchain_text_summarizers later
 
-                    documents_dict[file_id] = doc
-        except Exception as e:
-            print(f"Error loading files with pattern '{glob_pattern}': {e}")
-            continue
+                            documents_dict[file_id] = doc
+                except Exception as e:
+                    print(f"Error loading file '{file_path}': {e}")
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=3000, chunk_overlap=200)
 
