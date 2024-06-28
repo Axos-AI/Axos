@@ -8,6 +8,7 @@ from rank_bm25 import BM25Okapi
 from src.utils import clean_and_tokenize
 from langchain_community.document_loaders import DirectoryLoader, NotebookLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from pathlib import Path
 import requests
 
 def clone_github_repo(github_url, local_path):
@@ -52,18 +53,22 @@ def load_and_index_files(repo_path):
 
     split_documents = []
     for file_id, original_doc in documents_dict.items():
-        split_docs = text_splitter.split_documents([original_doc])
-        for split_doc in split_docs:
-            split_doc.metadata['file_id'] = original_doc.metadata['file_id']
-            split_doc.metadata['source'] = original_doc.metadata['source']
+        try:
+            split_docs = text_splitter.split_documents([original_doc])
+            for split_doc in split_docs:
+                split_doc.metadata['file_id'] = original_doc.metadata['file_id']
+                split_doc.metadata['source'] = original_doc.metadata['source']
 
-        split_documents.extend(split_docs)
+            split_documents.extend(split_docs)
+        except Exception as e:
+            print(f"Error splitting document {original_doc.metadata['source']}: {e}")
 
     index = None
     if split_documents:
         tokenized_documents = [clean_and_tokenize(doc.page_content) for doc in split_documents]
         index = BM25Okapi(tokenized_documents)
     return index, split_documents, file_type_counts, [doc.metadata['source'] for doc in split_documents]
+
 
 def search_documents(query, index, documents, n_results=5):
     query_tokens = clean_and_tokenize(query)
