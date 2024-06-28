@@ -14,7 +14,11 @@ class ChatAgent:
         self.llm = ChatOpenAI(openai_api_key=openai_api_key, model_name=model_name, temperature=temperature)
 
         self.chat_template = chat_template if chat_template else """
-            You are a developer reviewing a GitHub repository. You have been asked the following question: {question} | 
+            You are an experienced lead developer reviewing a GitHub repository. 
+
+            Conversation so far: {conversation_history} | 
+            
+            You have been asked the following question: {question} | 
 
             Here are the details of the repository: {repo_name} ({github_url}) | 
             
@@ -25,8 +29,6 @@ class ChatAgent:
             File Names: {file_names} | 
             
             File Structure: {file_structure} | 
-
-            Conversation so far: {conversation_history} | 
 
             Answer:
             """        
@@ -49,6 +51,7 @@ class ChatAgent:
         numbered_documents = format_documents(relevant_docs)
 
         print("Invoking the language model to answer the question...")
+        print("numbered_documents: ", numbered_documents)
 
         try:
             answer_with_sources = self.chain.invoke({

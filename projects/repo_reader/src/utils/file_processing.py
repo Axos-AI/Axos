@@ -43,6 +43,7 @@ def load_and_index_files(repo_path):
                     file_id = str(uuid.uuid4())
                     doc.metadata['source'] = relative_path
                     doc.metadata['file_id'] = file_id
+                    # TODO add blurb to metadata using langchain_text_summarizers later
 
                     documents_dict[file_id] = doc
         except Exception as e:
