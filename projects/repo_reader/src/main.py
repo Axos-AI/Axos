@@ -30,6 +30,8 @@ def main(chat, refactor):
                 refactorer.refactor()
 
             index, documents, file_type_counts, file_names = load_and_index_files(local_path)
+            print("Indexing complete.")
+            
             if index is None:
                 print("No documents were found to index. Exiting.")
                 exit()
