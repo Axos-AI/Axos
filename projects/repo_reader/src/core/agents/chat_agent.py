@@ -51,7 +51,6 @@ class ChatAgent:
         numbered_documents = format_documents(relevant_docs)
 
         print("Invoking the language model to answer the question...")
-        print("numbered_documents: ", numbered_documents)
 
         try:
             answer_with_sources = self.chain.invoke({
