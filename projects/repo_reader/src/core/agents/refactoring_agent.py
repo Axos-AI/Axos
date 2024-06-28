@@ -1,7 +1,7 @@
 """agent for refactoring code snippets using OpenAI's language model. Given a code snippet, the agent refactors the code using the language model. Should be extended to take multiple files and refactor them into modules.
 """
 from langchain_openai import ChatOpenAI
-from projects.repo_reader.src.utils.split_code import extract_chat_message, extract_code_block
+from src.utils.split_code import extract_code_block, extract_chat_message
 from src.config.config import OPENAI_API_KEY, model_name
 
 class RefactoringAgent:
