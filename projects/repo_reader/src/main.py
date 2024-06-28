@@ -25,16 +25,16 @@ def main():
                 exit()
 
             print("Repository cloned. Indexing files...")
-            llm = OpenAI(api_key=OPENAI_API_KEY, temperature=0.2)
+            llm = OpenAI(api_key=OPENAI_API_KEY, temperature=0.2, model_name=model_name)
 
             template = """
             You are a developer reviewing a GitHub repository. You have been asked the following question: {question}
 
             Here are the details of the repository:
 
-            Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Docs: {numbered_documents}  | FileCount: {file_type_counts} | FileNames: {filenames} | FileStructure: {file_structure}
+            Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Relevant Files: {numbered_documents}  | FileCount: {file_type_counts} | FileNames: {filenames} | FileStructure: {file_structure}
             
-            Unsure? Say "I am not sure".
+            if the user asks a question about a specific file in the repository and it is in the Relevant Files, answer the question with the answer from the file. 
 
             Answer:
             """
@@ -47,7 +47,7 @@ def main():
             chain = prompt | llm | StrOutputParser()
 
             conversation_history = ""
-            question_context = QuestionContext(index, documents, chain, model_name, repo_name, github_url, conversation_history, file_type_counts, filenames)
+            question_context = QuestionContext(index, documents, chain, repo_name, github_url, conversation_history, file_type_counts, filenames)
             while True:
                 try:
                     user_question = input("\n" + WHITE + "Ask a question about the repository (type 'exit()' to quit): " + RESET_COLOR)
