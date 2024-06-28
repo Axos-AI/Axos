@@ -2,7 +2,8 @@
 import os
 import tempfile
 from dotenv import load_dotenv
-from langchain import PromptTemplate, LLMChain
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import PromptTemplate
 from langchain_openai import OpenAI
 from src.config import WHITE, GREEN, RESET_COLOR, model_name
 from src.utils import format_user_question
@@ -46,10 +47,10 @@ def main():
                 input_variables=["repo_name", "github_url", "conversation_history", "question", "numbered_documents", "file_type_counts", "filenames"]
             )
 
-            llm_chain = LLMChain(prompt=prompt, llm=llm)
+            chain = prompt | llm | StrOutputParser()
 
             conversation_history = ""
-            question_context = QuestionContext(index, documents, llm_chain, model_name, repo_name, github_url, conversation_history, file_type_counts, filenames)
+            question_context = QuestionContext(index, documents, chain, model_name, repo_name, github_url, conversation_history, file_type_counts, filenames)
             while True:
                 try:
                     user_question = input("\n" + WHITE + "Ask a question about the repository (type 'exit()' to quit): " + RESET_COLOR)
