@@ -1,0 +1,145 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "repo-reader"
+version = "0.1.0"
+description = "Codebase helper for your project"
+authors = ["Varun Pasupuleti <vjz3qz@virginia.edu>"]
+packages = [
+  { include = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiohttp = "*"
+aiosignal = "*"
+anyio = "*"
+argilla = "*"
+async-timeout = "*"
+attrs = "*"
+backoff = "*"
+certifi = "*"
+charset-normalizer = "*"
+chromadb = "*"
+click = "*"
+clickhouse-connect = "*"
+commonmark = "*"
+dataclasses-json = "*"
+Deprecated = "*"
+duckdb = "*"
+et-xmlfile = "*"
+fastapi = "*"
+filelock = "*"
+frozenlist = "*"
+h11 = "*"
+hnswlib = "*"
+httpcore = "*"
+httptools = "*"
+httpx = "*"
+huggingface-hub = "*"
+idna = "*"
+Jinja2 = "*"
+joblib = "*"
+langchain = "*"
+langchain_core = "*"
+langchain_openai = "*"
+lxml = "*"
+lz4 = "*"
+Markdown = "*"
+MarkupSafe = "*"
+marshmallow = "*"
+marshmallow-enum = "*"
+monotonic = "*"
+mpmath = "*"
+msg-parser = "*"
+multidict = "*"
+mypy-extensions = "*"
+networkx = "*"
+nltk = "*"
+numpy = "*"
+olefile = "*"
+openai = "*"
+openapi-schema-pydantic = "*"
+openpyxl = "*"
+packaging = "*"
+pandas = "*"
+Pillow = "*"
+posthog = "*"
+pydantic = "*"
+Pygments = "*"
+pypandoc = "*"
+python-dateutil = "*"
+python-docx = "*"
+python-dotenv = "*"
+python-magic = "*"
+python-pptx = "*"
+pytz = "*"
+PyYAML = "*"
+rank-bm25 = "*"
+regex = "*"
+requests = "*"
+rfc3986 = "*"
+rich = "*"
+scikit-learn = "*"
+scipy = "*"
+sentence-transformers = "*"
+sentencepiece = "*"
+six = "*"
+sniffio = "*"
+SQLAlchemy = "*"
+starlette = "*"
+sympy = "*"
+tenacity = "*"
+threadpoolctl = "*"
+tiktoken = "*"
+tokenizers = "*"
+torch = "*"
+torchvision = "*"
+tqdm = "*"
+transformers = "*"
+typing-inspect = "*"
+typing_extensions = "*"
+tzdata = "*"
+unstructured = "*"
+urllib3 = "*"
+uvicorn = "*"
+uvloop = "*"
+watchfiles = "*"
+websockets = "*"
+wrapt = "*"
+XlsxWriter = "*"
+yarl = "*"
+zstandard = "*"
+
+[tool.poetry.dev-dependencies]
+black = "^24.3.0"
+flake8 = "^6.0.0"
+isort = "^5.12.0"
+pylint = "^2.16.3"
+pyright = "^1.1.296"
+pytest = "^7.2.1"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.poetry.extras]
+
+[tool.poetry.scripts]
+
+[tool.poetry.flake8]
+ignore = ["E203", "E501", "W503"]
+
+[tool.poetry.isort]
+profile = "black"
+
+[tool.pyright]
+
+[tool.pylint."messages control"]
+disable = "all"
+enable = ["empty-docstring", "missing-module-docstring", "missing-class-docstring", "missing-function-docstring"]
+ignore = ["setup.py", "__init__.py"]
+ignore-paths = ["tests"]
+
