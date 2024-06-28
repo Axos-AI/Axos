@@ -33,6 +33,8 @@ def main():
             Here are the details of the repository:
 
             Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Docs: {numbered_documents}  | FileCount: {file_type_counts} | FileNames: {filenames} | FileStructure: {file_structure}
+            
+            Unsure? Say "I am not sure".
 
             Answer:
             """
