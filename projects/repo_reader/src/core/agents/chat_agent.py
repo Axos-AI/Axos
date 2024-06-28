@@ -1,12 +1,12 @@
 """an agent that chats with the user. takes in repo details and answers user questions about the repo. should be extended to have refactor changes in its context.
 """
 from langchain_openai import ChatOpenAI
-from projects.repo_reader.config import OPENAI_API_KEY, model_name
+from config import OPENAI_API_KEY, model_name
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from projects.repo_reader.src.core.question_context import QuestionContext
-from projects.repo_reader.src.utils.utils import format_documents
-from projects.repo_reader.src.core.file_processing import search_documents, get_github_repo_structure
+from src.core.question_context import QuestionContext
+from src.utils.utils import format_documents
+from src.core.file_processing import search_documents, get_github_repo_structure
 
 class ChatAgent:
     def __init__(self, openai_api_key: str = OPENAI_API_KEY,  model_name: str = model_name, temperature: float = 0.3, conversation_history="", chat_template="", chat_prompt=None):
