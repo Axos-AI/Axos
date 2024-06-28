@@ -19,6 +19,7 @@ def main():
     print("Cloning the repository...")
     with tempfile.TemporaryDirectory() as local_path:
         if clone_github_repo(github_url, local_path):
+            print("Repository cloned. Indexing files at: " + local_path)
             index, documents, file_type_counts, filenames = load_and_index_files(local_path)
             if index is None:
                 print("No documents were found to index. Exiting.")
