@@ -3,7 +3,7 @@
 from langchain_openai import ChatOpenAI
 from projects.repo_reader.config import OPENAI_API_KEY, model_name
 
-class RefactoringAI:
+class RefactoringAgent:
     def __init__(self, openai_api_key: str = OPENAI_API_KEY,  model_name: str = model_name, temperature: float = 0.3):
         # Instantiate the ChatOpenAI model with the desired parameters
         self.llm = ChatOpenAI(openai_api_key=openai_api_key, model_name=model_name, temperature=temperature)
