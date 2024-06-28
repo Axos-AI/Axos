@@ -1,7 +1,7 @@
 """agent for refactoring code snippets using OpenAI's language model. Given a code snippet, the agent refactors the code using the language model. Should be extended to take multiple files and refactor them into modules.
 """
 from langchain_openai import ChatOpenAI
-from config import OPENAI_API_KEY, model_name
+from src.config.config import OPENAI_API_KEY, model_name
 
 class RefactoringAgent:
     def __init__(self, openai_api_key: str = OPENAI_API_KEY,  model_name: str = model_name, temperature: float = 0.3):

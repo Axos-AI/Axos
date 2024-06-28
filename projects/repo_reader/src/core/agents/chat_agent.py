@@ -1,7 +1,7 @@
 """an agent that chats with the user. takes in repo details and answers user questions about the repo. should be extended to have refactor changes in its context.
 """
 from langchain_openai import ChatOpenAI
-from config import OPENAI_API_KEY, model_name
+from src.config.config import OPENAI_API_KEY, model_name
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from src.core.question_context import QuestionContext
