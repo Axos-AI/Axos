@@ -8,8 +8,22 @@ from rank_bm25 import BM25Okapi
 from src.utils.utils import clean_and_tokenize
 from langchain_community.document_loaders import DirectoryLoader, NotebookLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from pathlib import Path
+from src.config.config import model_name
 import requests
+import os
+import uuid
+
+from langchain.retrievers.multi_vector import MultiVectorRetriever
+from langchain.storage import InMemoryByteStore
+from langchain_chroma import Chroma
+from langchain_openai import OpenAIEmbeddings
+
+from langchain_core.documents import Document
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain.retrievers.self_query.base import SelfQueryRetriever
+from langchain.chains.query_constructor.base import AttributeInfo
 
 def clone_github_repo(github_url, local_path):
     try:
@@ -66,33 +80,36 @@ def load_and_index_files(repo_path):
         except Exception as e:
             print(f"Error splitting document {original_doc.metadata['source']}: {e}")
 
-    index = None
-    if split_documents:
-        tokenized_documents = [clean_and_tokenize(doc.page_content) for doc in split_documents]
-        index = BM25Okapi(tokenized_documents)
-    return index, split_documents, file_type_counts, [doc.metadata['source'] for doc in split_documents]
+    # Store the documents in a Chroma vector database
+    vectorstore = Chroma.from_documents(split_documents, OpenAIEmbeddings())
 
+    # Create the MultiVectorRetriever
+    byte_store = InMemoryByteStore()
+    multi_vector_retriever = MultiVectorRetriever(
+        vectorstore=vectorstore,
+        docstore=vectorstore.as_retriever().docstore,
+        byte_store=byte_store,
+    )
 
-def search_documents(query, index, documents, n_results=5):
-    query_tokens = clean_and_tokenize(query)
-    bm25_scores = index.get_scores(query_tokens)
+    return multi_vector_retriever, file_type_counts, [doc.metadata['source'] for doc in split_documents]
 
-    # Compute TF-IDF scores
-    tfidf_vectorizer = TfidfVectorizer(tokenizer=clean_and_tokenize, lowercase=True, stop_words='english', use_idf=True, smooth_idf=True, sublinear_tf=True)
-    tfidf_matrix = tfidf_vectorizer.fit_transform([doc.page_content for doc in documents])
-    query_tfidf = tfidf_vectorizer.transform([query])
+def search_documents(query, multi_vector_retriever, n_results=5):
+    # Create the self-querying retriever
+    attribute_info = [
+        AttributeInfo(name="source", description="The source file path of the document"),
+        AttributeInfo(name="file_id", description="The unique identifier of the document"),
+        AttributeInfo(name="blurb", description="A short summary of the document")
+    ]
+    retriever = SelfQueryRetriever(
+        vectorstore=multi_vector_retriever,
+        attribute_info=attribute_info,
+        llm=ChatOpenAI(temperature=0.2, model_name=model_name),
+    )
 
-    # Compute Cosine Similarity scores
-    cosine_sim_scores = cosine_similarity(query_tfidf, tfidf_matrix).flatten()
+    # Perform the search
+    results = retriever.get_relevant_documents(query, k=n_results)
 
-    # Combine BM25 and Cosine Similarity scores
-    combined_scores = bm25_scores * 0.5 + cosine_sim_scores * 0.5
-
-    # Get unique top documents
-    unique_top_document_indices = list(set(combined_scores.argsort()[::-1]))[:n_results]
-
-    return [documents[i] for i in unique_top_document_indices]
-
+    return results
 
 def list_files(startpath):
     for root, dirs, files in os.walk(startpath):
