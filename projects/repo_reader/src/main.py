@@ -6,7 +6,7 @@ from src.config.config import WHITE, GREEN, RESET_COLOR
 from src.core.agents.chat_agent import ChatAgent
 from src.core.agents.refactoring_agent import RefactoringAgent
 from src.core.file_processing import clone_github_repo, load_and_index_files
-from src.core.question_context import QuestionContext
+from src.models.question_context import QuestionContext
 from src.utils.utils import format_user_question
 
 

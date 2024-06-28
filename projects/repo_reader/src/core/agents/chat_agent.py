@@ -4,7 +4,7 @@ from langchain_openai import ChatOpenAI
 from src.config.config import OPENAI_API_KEY, model_name
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from src.core.question_context import QuestionContext
+from src.models.question_context import QuestionContext
 from src.utils.utils import format_documents
 from src.core.file_processing import search_documents, get_github_repo_structure
 
