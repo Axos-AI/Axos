@@ -11,7 +11,7 @@ class RefactoringAI:
             {"role": "system", "content": "You are an assistant that helps with code refactoring."}
         ]
 
-    def suggest_refactoring(self, code_snippet: str) -> str:
+    def refactor(self, code_snippet: str) -> str:
         """refactors within a code snippet
 
         Args:
