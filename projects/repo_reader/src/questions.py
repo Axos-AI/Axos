@@ -1,6 +1,6 @@
 # questions.py
 from src.utils import format_documents
-from src.file_processing import search_documents
+from src.file_processing import search_documents, print_github_repo_structure
 
 class QuestionContext:
     def __init__(self, index, documents, llm_chain, model_name, repo_name, github_url, conversation_history, file_type_counts, filenames):
@@ -43,6 +43,7 @@ def ask_question(question, context: QuestionContext):
     "question": question,
     "numbered_documents": numbered_documents,
     "file_type_counts": context.file_type_counts,
-    "filenames": context.filenames
+    "filenames": context.filenames,
+    "file_structure": print_github_repo_structure(context.github_url)
 })
     return answer_with_sources

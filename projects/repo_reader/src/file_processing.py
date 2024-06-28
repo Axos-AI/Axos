@@ -8,6 +8,7 @@ from rank_bm25 import BM25Okapi
 from src.utils import clean_and_tokenize
 from langchain_community.document_loaders import DirectoryLoader, NotebookLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+import requests
 
 def clone_github_repo(github_url, local_path):
     try:
@@ -83,3 +84,44 @@ def search_documents(query, index, documents, n_results=5):
     unique_top_document_indices = list(set(combined_scores.argsort()[::-1]))[:n_results]
 
     return [documents[i] for i in unique_top_document_indices]
+
+
+def list_files(startpath):
+    for root, dirs, files in os.walk(startpath):
+        level = root.replace(startpath, '').count(os.sep)
+        indent = ' ' * 4 * (level)
+        print('{}{}/'.format(indent, os.path.basename(root)))
+        subindent = ' ' * 4 * (level + 1)
+        for f in files:
+            print('{}{}'.format(subindent, f))
+
+
+def print_github_repo_structure(repo_url):
+    # Extract username and repository name from the URL
+    parts = repo_url.strip('/').split('/')
+    username = parts[-2]
+    repo_name = parts[-1]
+
+    # Construct the API URL to fetch the repository contents
+    api_url = f"https://api.github.com/repos/{username}/{repo_name}/contents/"
+
+    # Make a GET request to the GitHub API
+    response = requests.get(api_url)
+    if response.status_code == 200:
+        repo_contents = response.json()
+
+        # Print the repository structure recursively
+        print(f"Repository Structure for {username}/{repo_name}:")
+        print_repo_contents(repo_contents, "")
+        
+    else:
+        print(f"Failed to fetch repository contents. Status code: {response.status_code}")
+
+
+def print_repo_contents(contents, indent):
+    for item in contents:
+        if item['type'] == 'file':
+            print(f"{indent}- {item['name']}")
+        elif item['type'] == 'dir':
+            print(f"{indent}+ {item['name']}/")
+            print_repo_contents(item['contents'], indent + "  ")

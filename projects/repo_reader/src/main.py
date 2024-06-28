@@ -28,7 +28,7 @@ def main():
             llm = OpenAI(api_key=OPENAI_API_KEY, temperature=0.2)
 
             template = """
-            Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Docs: {numbered_documents} | Q: {question} | FileCount: {file_type_counts} | FileNames: {filenames}
+            Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Docs: {numbered_documents} | Q: {question} | FileCount: {file_type_counts} | FileNames: {filenames} | FileStructure: {file_structure}
 
             Instr:
             1. Answer based on context/docs.
@@ -44,7 +44,7 @@ def main():
 
             prompt = PromptTemplate(
                 template=template,
-                input_variables=["repo_name", "github_url", "conversation_history", "question", "numbered_documents", "file_type_counts", "filenames"]
+                input_variables=["repo_name", "github_url", "conversation_history", "question", "numbered_documents", "file_type_counts", "filenames", "file_structure"]
             )
 
             chain = prompt | llm | StrOutputParser()
