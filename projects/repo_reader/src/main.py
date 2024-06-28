@@ -4,7 +4,7 @@ import tempfile
 from dotenv import load_dotenv
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
-from langchain_openai import OpenAI
+from langchain_openai import ChatOpenAI
 from src.config import WHITE, GREEN, RESET_COLOR, model_name
 from src.utils import format_user_question
 from src.file_processing import clone_github_repo, load_and_index_files
@@ -25,7 +25,7 @@ def main():
                 exit()
 
             print("Repository cloned. Indexing files...")
-            llm = OpenAI(api_key=OPENAI_API_KEY, temperature=0.2, model_name=model_name)
+            llm = ChatOpenAI(openai_api_key=OPENAI_API_KEY, temperature=0.2, model_name=model_name)
 
             template = """
             You are a developer reviewing a GitHub repository. You have been asked the following question: {question}
