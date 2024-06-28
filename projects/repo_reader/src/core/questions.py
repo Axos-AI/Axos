@@ -1,6 +1,6 @@
 # questions.py
 from src.utils import format_documents
-from src.file_processing import search_documents, get_github_repo_structure
+from projects.repo_reader.src.core.file_processing import search_documents, get_github_repo_structure
 
 class QuestionContext:
     def __init__(self, index, documents, llm_chain, repo_name, github_url, conversation_history, file_type_counts, filenames):
