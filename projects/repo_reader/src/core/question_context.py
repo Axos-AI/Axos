@@ -9,7 +9,7 @@ class QuestionContext:
         self.github_url = github_url
         self.file_type_counts = file_type_counts
         self.file_names = file_names
-        self.file_structure = file_structure if file_structure else self.get_file_structure()
+        self.file_structure = file_structure if file_structure else self.set_file_structure()
 
     def set_file_structure(self):
         try:
