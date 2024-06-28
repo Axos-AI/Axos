@@ -7,6 +7,8 @@ if __name__ == "__main__":
     parser.add_argument("-c", '--chat', action='store_false', help='Run the chat interface')
     parser.add_argument("-r", '--refactor', action='store_false', help='Run the refactoring AI')
     args = parser.parse_args()
+    if not args.chat and not args.refactor:
+        args.chat = True
     main(args.chat, args.refactor)
 
 
