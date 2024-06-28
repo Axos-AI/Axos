@@ -28,16 +28,11 @@ def main():
             llm = OpenAI(api_key=OPENAI_API_KEY, temperature=0.2)
 
             template = """
-            Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Docs: {numbered_documents} | Q: {question} | FileCount: {file_type_counts} | FileNames: {filenames} | FileStructure: {file_structure}
+            You are a developer reviewing a GitHub repository. You have been asked the following question: {question}
 
-            Instr:
-            1. Answer based on context/docs.
-            2. Focus on repo/code.
-            3. Consider:
-                a. Purpose/features - describe.
-                b. Functions/code - provide details/samples.
-                c. Setup/usage - give instructions.
-            4. Unsure? Say "I am not sure".
+            Here are the details of the repository:
+
+            Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Docs: {numbered_documents}  | FileCount: {file_type_counts} | FileNames: {filenames} | FileStructure: {file_structure}
 
             Answer:
             """
