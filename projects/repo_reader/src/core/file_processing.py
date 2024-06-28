@@ -5,7 +5,7 @@ import subprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from rank_bm25 import BM25Okapi
-from src.utils import clean_and_tokenize
+from src.utils.utils import clean_and_tokenize
 from langchain_community.document_loaders import DirectoryLoader, NotebookLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pathlib import Path

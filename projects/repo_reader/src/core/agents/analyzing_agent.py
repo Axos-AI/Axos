@@ -1,0 +1,2 @@
+    """an agent that can parse a codebase and analyze the code using the ast module. Should be able to identify dead code, unused imports, and other common code smells. Should be able to detect potential refactorable files.
+    """
