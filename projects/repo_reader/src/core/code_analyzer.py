@@ -2,11 +2,11 @@ import ast
 import os
 
 class CodeAnalyzer:
-    def __init__(self, repo_path):
-        self.repo_path = repo_path
+    def __init__(self, code_base_path):
+        self.code_base_path = code_base_path
 
     def analyze(self):
-        for root, _, files in os.walk(self.repo_path):
+        for root, _, files in os.walk(self.code_base_path):
             for file in files:
                 if file.endswith('.py'):
                     with open(os.path.join(root, file), 'r') as f:
