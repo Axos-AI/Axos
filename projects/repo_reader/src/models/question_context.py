@@ -1,4 +1,4 @@
-from src.core.file_processing import get_github_repo_structure
+from src.utils.file_processing import get_github_repo_structure
 
 
 class QuestionContext:
