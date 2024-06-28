@@ -13,7 +13,7 @@ class CodeRefactorer:
                     file_path = os.path.join(root, file)
                     with open(file_path, 'r') as f:
                         code = f.read()
-                        refactored_code, logged_changes = self.ai.refactor(code)
+                        refactored_code, logged_changes = self.ai.refactor(code) # TODO first check if log is empty
                         
                     # Write the refactored code back to the original file
                     with open(file_path, 'w') as f:
