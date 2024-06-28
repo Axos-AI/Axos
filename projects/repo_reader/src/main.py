@@ -28,13 +28,19 @@ def main():
             llm = ChatOpenAI(openai_api_key=OPENAI_API_KEY, temperature=0.2, model_name=model_name)
 
             template = """
-            You are a developer reviewing a GitHub repository. You have been asked the following question: {question}
+            You are a developer reviewing a GitHub repository. You have been asked the following question: {question} | 
 
-            Here are the details of the repository:
-
-            Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Relevant Files: {numbered_documents}  | FileCount: {file_type_counts} | FileNames: {filenames} | FileStructure: {file_structure}
+            Here are the details of the repository: {repo_name} ({github_url}) | 
             
-            if the user asks a question about a specific file in the repository and it is in the Relevant Files, answer the question with the answer from the file. 
+            Relevant Files: {numbered_documents}  | 
+            
+            File Count: {file_type_counts} | 
+            
+            File Names: {filenames} | 
+            
+            File Structure: {file_structure} | 
+
+            Conversation so far: {conversation_history} | 
 
             Answer:
             """
@@ -53,8 +59,8 @@ def main():
                     user_question = input("\n" + WHITE + "Ask a question about the repository (type 'exit()' to quit): " + RESET_COLOR)
                     if user_question.lower() == "exit()":
                         break
-                    print('Thinking...')
                     user_question = format_user_question(user_question)
+                    print('Thinking...')
 
                     answer = ask_question(user_question, question_context)
                     print(GREEN + '\nANSWER\n' + answer + RESET_COLOR + '\n')
