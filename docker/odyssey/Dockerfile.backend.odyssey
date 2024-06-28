@@ -1,0 +1,51 @@
+# Use the official Python image as the base image
+FROM python:3.11.8-slim
+
+# Set the working directory for backend
+WORKDIR /Axos
+
+# Copy the source code to the working directory
+COPY . /Axos
+
+# Create and activate virtual environment
+RUN python -m venv venv
+ENV PATH="/Axos/venv/bin:$PATH"
+
+# Install system dependencies for CV2
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+
+# Install backend dependencies
+RUN pip install -r pip-requirements.txt
+RUN pip install -r dev-requirements.txt
+
+# Install utils package
+COPY libs/utils /Axos/libs/utils
+WORKDIR /Axos/libs/utils
+RUN pip install -e .
+
+# Install agents package
+COPY libs/agents /Axos/libs/agents
+WORKDIR /Axos/libs/agents
+RUN pip install -e .
+
+# Install stampede package
+COPY libs/stampede /Axos/libs/stampede
+WORKDIR /Axos/libs/stampede
+RUN pip install -e .
+
+# Install backend dependencies for the project
+COPY odyssey/requirements.txt /Axos/odyssey
+COPY odyssey/axos /Axos/odyssey/axos
+WORKDIR /Axos/odyssey
+RUN pip install -r requirements.txt
+
+# Expose the necessary ports
+EXPOSE 8000
+
+# Set the working directory for backend
+WORKDIR /Axos/odyssey/axos
+
+# Command to start all necessary services
+CMD uvicorn app:app --host 0.0.0.0 --port 8000 --reload & \
+    celery -A celery_worker worker --loglevel=info --pool=threads & \
+    celery -A celery_worker beat --loglevel=info

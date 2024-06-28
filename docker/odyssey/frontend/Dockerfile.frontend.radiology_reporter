@@ -1,0 +1,29 @@
+# Use the official Node.js image as the base image
+FROM node:20-slim
+
+# Set the working directory
+WORKDIR /Axos
+
+# Copy the source code to the working directory
+COPY . /Axos
+
+# Set the working directory for frontend
+WORKDIR /Axos/odyssey/axos/frontend
+
+# Copy package.json and package-lock.json first to leverage Docker cache
+COPY odyssey/axos/frontend/package*.json ./
+
+# Install frontend dependencies
+RUN npm install
+
+# Copy the rest of the frontend source code
+COPY odyssey/axos/frontend ./
+
+# Build the frontend
+RUN npm run build
+
+# Expose the necessary ports
+EXPOSE 3000
+
+# Command to start all necessary services
+CMD npm start

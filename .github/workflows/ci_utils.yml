@@ -1,0 +1,20 @@
+---
+name: CI libs/utils
+
+on:
+  pull_request:
+    paths:
+      - "dev-requirements.txt"
+      - "pip-requirements.txt"
+      - ".github/workflows/python_reusable.yml"
+      - ".github/workflows/ci_utils.yml"
+      - "libs/utils/**"
+  workflow_dispatch: # Allows to trigger the workflow manually in GitHub UI
+
+jobs:
+  ci-libs-utils:
+    uses: ./.github/workflows/python_reusable.yml
+    with:
+      working-directory: libs/utils
+      install-packages: "git nodejs npm python3 python3-venv"
+    secrets: inherit

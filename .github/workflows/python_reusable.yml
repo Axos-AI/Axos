@@ -1,0 +1,56 @@
+name: Reusable Python Library CI
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      install-packages:
+        description: "Space-separated list of packages to install using apt-get."
+        default: ""
+        type: string
+      ci-timeout:
+        description: "The timeout of the ci job. The default is 25min"
+        default: 25
+        type: number
+
+jobs:
+  ci-local-py-template:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.ci-timeout }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version-file: ${{ github.workspace }}/.python-version
+          cache: "pip"
+          cache-dependency-path: |
+            ${{ github.workspace }}/dev-requirements.txt
+            ${{ github.workspace }}/pip-requirements.txt
+            ${{ github.workspace }}/${{ inputs.working-directory }}/requirements.txt
+
+      - name: Install extra packages
+        if: ${{ inputs.install-packages != ''}}
+        run: |
+          sudo apt-get install -y ${{ inputs.install-packages }}
+
+      - name: Install dependencies
+        run: |
+          pip install -r ${{ github.workspace }}/pip-requirements.txt
+          pip install -r ${{ github.workspace }}/dev-requirements.txt
+          pip install -r ${{ github.workspace }}/${{ inputs.working-directory }}/requirements.txt
+
+      - name: Typechecking
+        continue-on-error: true
+        run: |
+          pyright $(git ls-files "*.py")
+
+      - name: Test
+        continue-on-error: true
+        run: |
+          python3 -m pytest tests/
