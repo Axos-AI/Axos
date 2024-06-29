@@ -29,17 +29,17 @@ def main(chat, refactor):
                 refactorer = CodeRefactorer(local_path, ai)
                 refactorer.refactor()
 
-            index, file_type_counts, file_names = load_and_index_files(local_path)
+            vectorstore, file_type_counts, file_names = load_and_index_files(local_path)
             print("Indexing complete.")
             
-            if index is None:
+            if vectorstore is None:
                 print("No documents were found to index. Exiting.")
                 exit()
 
             if chat:
                 chat_agent = ChatAgent()
 
-                question_context = QuestionContext(index, repo_name, github_url, file_type_counts, file_names)
+                question_context = QuestionContext(vectorstore, repo_name, github_url, file_type_counts, file_names)
                 while True:
                     try:
                         user_question = input("\n" + WHITE + "Ask a question about the repository (type 'exit()' to quit): " + RESET_COLOR)

@@ -2,9 +2,8 @@ from src.utils.file_processing import get_github_repo_structure
 
 
 class QuestionContext:
-    def __init__(self, index, documents, repo_name, github_url, file_type_counts, file_names, file_structure=None):
-        self.index = index
-        self.documents = documents
+    def __init__(self, vectorstore, repo_name, github_url, file_type_counts, file_names, file_structure=None):
+        self.vectorstore = vectorstore
         self.repo_name = repo_name
         self.github_url = github_url
         self.file_type_counts = file_type_counts

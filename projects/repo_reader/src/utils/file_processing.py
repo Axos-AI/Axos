@@ -61,9 +61,9 @@ def load_and_index_files(repo_path):
                             doc.metadata['file_id'] = file_id
 
                             # Create a summary for the document
-                            summarizer = ChatPromptTemplate.from_template("Summarize the following document:\n\n{doc}")
-                            summary = ChatOpenAI(temperature=0.2, model_name=model_name).generate_prompt(summarizer.format_prompt({"doc": doc.page_content}))
-                            doc.metadata['blurb'] = summary
+                            # summarizer = ChatPromptTemplate.from_template("Summarize the following document:\n\n{doc}")
+                            # summary = ChatOpenAI(temperature=0.2, model_name=model_name).generate_prompt(summarizer.format_prompt({"doc": doc.page_content}))
+                            # doc.metadata['blurb'] = summary
 
                             documents_dict[file_id] = doc
                 except Exception as e:
@@ -78,7 +78,7 @@ def load_and_index_files(repo_path):
             for split_doc in split_docs:
                 split_doc.metadata['file_id'] = original_doc.metadata['file_id']
                 split_doc.metadata['source'] = original_doc.metadata['source']
-                split_doc.metadata['blurb'] = original_doc.metadata['blurb']
+                # split_doc.metadata['blurb'] = original_doc.metadata['blurb']
 
             split_documents.extend(split_docs)
         except Exception as e:

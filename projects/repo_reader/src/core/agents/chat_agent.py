@@ -45,7 +45,7 @@ class ChatAgent:
 
     def ask_question_with_context(self, question, context: QuestionContext) -> str: # TODO update to take in different context/parameters
         print(f"Searching for relevant documents for question: '{question}'...")
-        relevant_docs = search_documents(question, context.index, context.documents, n_results=5)
+        relevant_docs = search_documents(question, context.vectorstore, context.documents, n_results=5)
         print(f"Found {len(relevant_docs)} relevant documents.")
 
         numbered_documents = format_documents(relevant_docs)
