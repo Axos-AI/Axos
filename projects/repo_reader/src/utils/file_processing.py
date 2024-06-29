@@ -19,7 +19,6 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 
 from langchain_core.documents import Document
-from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain.retrievers.self_query.base import SelfQueryRetriever
@@ -60,7 +59,11 @@ def load_and_index_files(repo_path):
                             file_id = str(uuid.uuid4())
                             doc.metadata['source'] = file_path
                             doc.metadata['file_id'] = file_id
-                            # TODO add blurb to metadata using langchain_text_summarizers later
+
+                            # Create a summary for the document
+                            summarizer = ChatPromptTemplate.from_template("Summarize the following document:\n\n{doc}")
+                            summary = ChatOpenAI(temperature=0.2, model_name=model_name).generate_prompt(summarizer.format_prompt({"doc": doc.page_content}))
+                            doc.metadata['blurb'] = summary
 
                             documents_dict[file_id] = doc
                 except Exception as e:
@@ -75,21 +78,23 @@ def load_and_index_files(repo_path):
             for split_doc in split_docs:
                 split_doc.metadata['file_id'] = original_doc.metadata['file_id']
                 split_doc.metadata['source'] = original_doc.metadata['source']
+                split_doc.metadata['blurb'] = original_doc.metadata['blurb']
 
             split_documents.extend(split_docs)
         except Exception as e:
             print(f"Error splitting document {original_doc.metadata['source']}: {e}")
-
-    # Store the documents in a Chroma vector database
-    vectorstore = Chroma.from_documents(split_documents, OpenAIEmbeddings())
-
-    # Create the MultiVectorRetriever
+            
+    # Initialize a MultiVectorRetriever with Chroma as the vectorstore
+    vectorstore = Chroma(embedding_function=OpenAIEmbeddings())
     byte_store = InMemoryByteStore()
+    id_key = 'file_id'  
     multi_vector_retriever = MultiVectorRetriever(
         vectorstore=vectorstore,
-        docstore=vectorstore.as_retriever().docstore,
         byte_store=byte_store,
+        id_key=id_key
     )
+    # Store the documents and their summaries in the vectorstore
+    multi_vector_retriever.vectorstore.add_documents(split_documents)
 
     return multi_vector_retriever, file_type_counts, [doc.metadata['source'] for doc in split_documents]
 
