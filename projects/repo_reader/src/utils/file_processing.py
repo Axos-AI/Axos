@@ -119,34 +119,27 @@ def list_files(startpath):
         for f in files:
             print('{}{}'.format(subindent, f))
 
+            
+def get_local_repo_structure(local_path):
+    # Check if the local path exists
+    if not os.path.exists(local_path):
+        return f"Error: Path '{local_path}' does not exist."
 
-def get_github_repo_structure(repo_url):
-    # Extract username and repository name from the URL
-    parts = repo_url.strip('/').split('/')
-    username = parts[-2]
-    repo_name = parts[-1]
+    # Initialize a variable to hold the repository structure as a string
+    repo_structure = f"Repository Structure for {local_path}:\n"
 
-    # Construct the API URL to fetch the repository contents
-    api_url = f"https://api.github.com/repos/{username}/{repo_name}/contents/"
+    # Call build_local_repo_structure to build the structure recursively
+    repo_structure += build_local_repo_structure(local_path, "")
 
-    # Make a GET request to the GitHub API
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        repo_contents = response.json()
+    return repo_structure
 
-        # Initialize a variable to hold the repository structure as a string
-        repo_structure = f"Repository Structure for {username}/{repo_name}:\n"
-        repo_structure += build_repo_structure(repo_contents, "")
-        return repo_structure
-    else:
-        return f"Failed to fetch repository contents. Status code: {response.status_code}"
-
-def build_repo_structure(contents, indent):
+def build_local_repo_structure(local_path, indent):
     repo_structure = ""
-    for item in contents:
-        if item['type'] == 'file':
-            repo_structure += f"{indent}- {item['name']}\n"
-        elif item['type'] == 'dir':
-            repo_structure += f"{indent}+ {item['name']}/\n"
-            repo_structure += build_repo_structure(item['contents'], indent + "  ")
+    for item in os.listdir(local_path):
+        item_path = os.path.join(local_path, item)
+        if os.path.isfile(item_path):
+            repo_structure += f"{indent}- {item}\n"
+        elif os.path.isdir(item_path):
+            repo_structure += f"{indent}+ {item}/\n"
+            repo_structure += build_local_repo_structure(item_path, indent + "  ")
     return repo_structure

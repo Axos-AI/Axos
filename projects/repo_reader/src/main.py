@@ -39,7 +39,7 @@ def main(chat, refactor):
             if chat:
                 chat_agent = ChatAgent()
 
-                question_context = QuestionContext(vectorstore, repo_name, github_url, file_type_counts, file_names)
+                question_context = QuestionContext(vectorstore, repo_name, local_path, file_type_counts, file_names)
                 while True:
                     try:
                         user_question = input("\n" + WHITE + "Ask a question about the repository (type 'exit()' to quit): " + RESET_COLOR)
