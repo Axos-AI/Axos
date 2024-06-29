@@ -5,18 +5,18 @@ from src.core.code_refactorer import CodeRefactorer
 from src.config.config import WHITE, GREEN, RESET_COLOR
 from src.core.agents.chat_agent import ChatAgent
 from src.core.agents.refactoring_agent import RefactoringAgent
-from src.core.file_processing import clone_github_repo, load_and_index_files
-from src.core.question_context import QuestionContext
+from src.utils.file_processing import clone_github_repo, load_and_index_files
+from src.models.question_context import QuestionContext
 from src.utils.utils import format_user_question
 
 
 def main(chat, refactor):
     
-    github_url = input("Enter the GitHub URL of the repository: ")
-    repo_name = github_url.split("/")[-1]
+    repo_url = input("Enter the GitHub URL of the repository: ")
+    repo_name = repo_url.split("/")[-1]
     print("Cloning the repository...")
     with tempfile.TemporaryDirectory() as local_path:
-        if clone_github_repo(github_url, local_path):
+        if clone_github_repo(repo_url, local_path):
             print("Repository cloned. Indexing files at: " + local_path)
 
             if not chat and not refactor:
@@ -29,15 +29,17 @@ def main(chat, refactor):
                 refactorer = CodeRefactorer(local_path, ai)
                 refactorer.refactor()
 
-            index, documents, file_type_counts, file_names = load_and_index_files(local_path)
-            if index is None:
+            vectorstore, file_type_counts, file_names = load_and_index_files(local_path)
+            print("Indexing complete.")
+            
+            if vectorstore is None:
                 print("No documents were found to index. Exiting.")
                 exit()
 
             if chat:
                 chat_agent = ChatAgent()
 
-                question_context = QuestionContext(index, documents, repo_name, local_path, file_type_counts, file_names)
+                question_context = QuestionContext(vectorstore, repo_name, repo_url, local_path, file_type_counts, file_names)
                 while True:
                     try:
                         user_question = input("\n" + WHITE + "Ask a question about the repository (type 'exit()' to quit): " + RESET_COLOR)
