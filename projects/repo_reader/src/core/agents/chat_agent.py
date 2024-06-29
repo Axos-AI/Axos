@@ -20,7 +20,7 @@ class ChatAgent:
             
             You have been asked the following question: {question} | 
 
-            Here are the details of the repository: {repo_name} ({github_url}) | 
+            Here are the details of the repository: {repo_name} ({repo_url}) | 
             
             Relevant Files: {numbered_documents}  | 
             
@@ -35,7 +35,7 @@ class ChatAgent:
 
         self.chat_prompt = chat_prompt if chat_prompt else PromptTemplate(
                 template=self.chat_template,
-                input_variables=["repo_name", "github_url", "conversation_history", "question", "numbered_documents", "file_type_counts", "file_names", "file_structure"]
+                input_variables=["repo_name", "repo_url", "conversation_history", "question", "numbered_documents", "file_type_counts", "file_names", "file_structure"]
             )
         self.chain = self.chat_prompt |  self.llm | StrOutputParser()
 
@@ -55,7 +55,7 @@ class ChatAgent:
         try:
             answer_with_sources = self.chain.invoke({
                 "repo_name": context.repo_name,
-                "github_url": context.github_url,
+                "repo_url": context.repo_url,
                 "conversation_history": self.conversation_history,
                 "question": question,
                 "numbered_documents": numbered_documents,

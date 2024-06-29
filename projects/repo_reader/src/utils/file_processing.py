@@ -16,9 +16,9 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-def clone_github_repo(github_url, local_path):
+def clone_github_repo(repo_url, local_path):
     try:
-        subprocess.run(['git', 'clone', github_url, local_path], check=True)
+        subprocess.run(['git', 'clone', repo_url, local_path], check=True)
         return True
     except subprocess.CalledProcessError as e:
         print(f"Failed to clone repository: {e}")
@@ -119,7 +119,7 @@ def list_files(startpath):
         for f in files:
             print('{}{}'.format(subindent, f))
 
-            
+
 def get_local_repo_structure(local_path):
     # Check if the local path exists
     if not os.path.exists(local_path):

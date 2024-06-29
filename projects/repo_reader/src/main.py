@@ -12,11 +12,11 @@ from src.utils.utils import format_user_question
 
 def main(chat, refactor):
     
-    github_url = input("Enter the GitHub URL of the repository: ")
-    repo_name = github_url.split("/")[-1]
+    repo_url = input("Enter the GitHub URL of the repository: ")
+    repo_name = repo_url.split("/")[-1]
     print("Cloning the repository...")
     with tempfile.TemporaryDirectory() as local_path:
-        if clone_github_repo(github_url, local_path):
+        if clone_github_repo(repo_url, local_path):
             print("Repository cloned. Indexing files at: " + local_path)
 
             if not chat and not refactor:
