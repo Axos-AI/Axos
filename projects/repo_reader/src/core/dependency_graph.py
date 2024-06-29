@@ -3,7 +3,7 @@ import subprocess
 import re
 
 def generate_dependency_graph(project_path):
-    result = subprocess.run(['pydeps', '--no-output', '--noshow','--verbose', '--show-dot', '--show-cycles', project_path], capture_output=True, text=True)
+    result = subprocess.run(['pydeps', '--no-output', '--noshow', '--show-dot', project_path], capture_output=True, text=True)
     if result.returncode != 0:
         print("Error running pydeps:", result.stderr)
         return None
