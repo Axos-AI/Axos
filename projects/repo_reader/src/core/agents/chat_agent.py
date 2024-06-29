@@ -6,7 +6,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from src.core.question_context import QuestionContext
 from src.utils.utils import format_documents
-from src.core.file_processing import search_documents, get_github_repo_structure
+from src.core.file_processing import search_documents
 
 class ChatAgent:
     def __init__(self, openai_api_key: str = OPENAI_API_KEY,  model_name: str = model_name, temperature: float = 0.3, conversation_history="", chat_template="", chat_prompt=None):
