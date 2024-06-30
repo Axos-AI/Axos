@@ -4,8 +4,10 @@ import subprocess
 import json
 
 class CodeAnalyzer:
-    def __init__(self, code_base_path):
+    def __init__(self, code_base_path, entry_point):
         self.code_base_path = code_base_path
+        self.entry_point = entry_point # format: "src/main.py"
+        self.full_entry_point = os.path.join(self.code_base_path, self.entry_point)
         self.dependencies = self.generate_dependency_graph()
         self.adjacency_list = self.build_adjacency_list(self.validate_dependencies_and_return_tree())
         self.topological_order = self.topological_sort()
@@ -30,7 +32,7 @@ class CodeAnalyzer:
     def generate_dependency_graph(self):
         try:
             result = subprocess.run(
-                ["dep-tree", "tree", self.code_base_path, "--json"],
+                ["dep-tree", "tree", self.full_entry_point, "--json"],
                 capture_output=True,
                 text=True
             )

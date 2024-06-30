@@ -15,7 +15,7 @@ if __name__ == "__main__":
         exit()
     if not args.chat and not args.refactor:
         args.chat = True
-    main(args.chat, args.refactor)
+    main(args.chat, args.refactor, args.entry_point)
 
 
 
