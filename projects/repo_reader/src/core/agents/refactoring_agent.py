@@ -14,18 +14,19 @@ class RefactoringAgent:
             {"role": "system", "content": "You are an assistant that helps with code refactoring."}
         ]
 
-    def refactor(self, code_snippet: str) -> str:
-        """refactors within a code snippet
+    def refactor(self, code_snippet: str, context: str) -> str:
+        """refactors within a code snippet with the given context
 
         Args:
             code_snippet (str): code snippet to refactor
+            context (str): context to refactor the code snippet
 
         Returns:
             str: refactored code
         """
 
         # Define the user message within the prompt template
-        self.messages.append({"role": "user", "content": f"Refactor the following code:\n\n{code_snippet}"})
+        self.messages.append({"role": "user", "content": f"Refactor the following code:\n\n{code_snippet}\n\nThese are how you refactored previous files, ensure you extend the functionality:\n\n{context}"})
 
         # Invoke the model with the defined prompt template
         response = self.llm.invoke(self.messages)
