@@ -8,7 +8,8 @@ class CodeAnalyzer:
         self.code_base_path = code_base_path
         self.entry_point = entry_point # format: "src/main.py"
         self.full_entry_point = os.path.join(self.code_base_path, self.entry_point)
-        self.dependencies = self.generate_dependency_graph()
+        self.dependencies = {}
+        self.generate_dependency_graph()
         self.adjacency_list = self.build_adjacency_list(self.validate_dependencies_and_return_tree())
         self.topological_order = self.topological_sort()
         self.refactor_order = self.topological_order[::-1]  # reverse again and start with util/config files, then move to core logic, and finally to main/entry point
@@ -75,7 +76,7 @@ class CodeAnalyzer:
                         adjacency_list[key].add(child)
                         parse_tree(sub_tree[key])
                         
-        parse_tree(self, tree)   
+        parse_tree(tree)   
         for key in adjacency_list:
             adjacency_list[key] = list(adjacency_list[key]) 
         return adjacency_list
