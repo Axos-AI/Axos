@@ -3,8 +3,10 @@ import json
 
 
 class CodeRefactorer:
-    def __init__(self, repo_path, ai, refactor_order, adjacency_list):
-        self.repo_path = repo_path
+    def __init__(self, code_base_path, entry_point, ai, refactor_order, adjacency_list):
+        self.code_base_path = code_base_path
+        self.entry_point = entry_point
+        self.relative_path = os.path.join(self.code_base_path, os.path.dirname(self.entry_point))
         self.ai = ai
         self.refactor_order = refactor_order
         self.adjacency_list = adjacency_list
@@ -13,7 +15,7 @@ class CodeRefactorer:
         refactored_files = {}
         
         for file in self.refactor_order:
-            file_path = os.path.join(self.repo_path, file)
+            file_path = os.path.join(self.relative_path, file)
             
             if os.path.exists(file_path) and file.endswith('.py'):
                 with open(file_path, 'r') as f:

@@ -29,7 +29,7 @@ def main(chat, refactor, entry_point):
                 ai = RefactoringAgent()
                 refactor_order = analyzer.get_refactor_order()
                 dependencies_adjacency_list = analyzer.get_adjacency_list()
-                refactorer = CodeRefactorer(local_path, ai, refactor_order, dependencies_adjacency_list)
+                refactorer = CodeRefactorer(local_path, entry_point, ai, refactor_order, dependencies_adjacency_list)
                 print("Refactoring the code...")
                 refactorer.refactor()
 
