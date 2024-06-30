@@ -26,7 +26,9 @@ def main(chat, refactor):
                 analyzer = CodeAnalyzer(local_path)
                 analyzer.analyze()
                 ai = RefactoringAgent()
-                refactorer = CodeRefactorer(local_path, ai)
+                refactor_order = analyzer.get_refactor_order()
+                dependencies_adjacency_list = analyzer.get_adjacency_list()
+                refactorer = CodeRefactorer(local_path, ai, refactor_order, dependencies_adjacency_list)
                 refactorer.refactor()
 
             vectorstore, file_type_counts, file_names = load_and_index_files(local_path)
