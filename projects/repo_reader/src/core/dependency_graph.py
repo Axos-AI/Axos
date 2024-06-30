@@ -78,4 +78,5 @@ project_path = "/Users/varunpasupuleti/Documents/Axos/Axos/projects/repo_reader/
 dependencies = generate_dependency_graph(project_path)
 tree = validate_dependencies_and_return_tree(dependencies)
 adjacency_list = build_adjacency_list(tree)
-topological_order = topological_sort(adjacency_list) # reverse again
+topological_order = topological_sort(adjacency_list)
+refactor_order = topological_order[::-1] # reverse again and start with util/config files
