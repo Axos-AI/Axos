@@ -9,9 +9,9 @@ class CodeAnalyzer:
         self.entry_point = entry_point # format: "src/main.py"
         self.full_entry_point = os.path.join(self.code_base_path, self.entry_point)
         self.dependencies = {}
-        self.generate_dependency_graph()
-        self.adjacency_list = self.build_adjacency_list(self.validate_dependencies_and_return_tree())
-        self.topological_order = self.topological_sort()
+        self._generate_dependency_graph()
+        self.adjacency_list = self._build_adjacency_list(self._validate_dependencies_and_return_tree())
+        self.topological_order = self._topological_sort()
         self.refactor_order = self.topological_order[::-1]  # reverse again and start with util/config files, then move to core logic, and finally to main/entry point
 
     def analyze(self):
@@ -30,7 +30,7 @@ class CodeAnalyzer:
         # Implement analysis logic here
         pass
 
-    def generate_dependency_graph(self):
+    def _generate_dependency_graph(self):
         try:
             result = subprocess.run(
                 ["dep-tree", "tree", self.full_entry_point, "--json"],
@@ -51,7 +51,7 @@ class CodeAnalyzer:
             return None
 
 
-    def validate_dependencies_and_return_tree(self):
+    def _validate_dependencies_and_return_tree(self):
         if self.dependencies is None:
             raise ValueError("Invalid dependencies: empty or None")
         if self.dependencies.get("error"):
@@ -63,7 +63,7 @@ class CodeAnalyzer:
         return self.dependencies["tree"]
 
 
-    def build_adjacency_list(self, tree):
+    def _build_adjacency_list(self, tree):
         adjacency_list = {}
         # recursively parse the tree until value is null
         # when value is null, we have reached the leaf node
@@ -82,7 +82,7 @@ class CodeAnalyzer:
         return adjacency_list
 
 
-    def topological_sort(self):
+    def _topological_sort(self):
         visited = set()
         stack = []
         
