@@ -143,3 +143,14 @@ def build_local_repo_structure(local_path, indent):
             repo_structure += f"{indent}+ {item}/\n"
             repo_structure += build_local_repo_structure(item_path, indent + "  ")
     return repo_structure
+
+def find_modified_files():
+    result = subprocess.run(['git', 'diff', '--name-only', 'HEAD'], capture_output=True, text=True, check=True)
+    # Check if the command was successful
+    if result.returncode != 0:
+        raise Exception(f"Git command failed with exit code {result.returncode}")
+    
+    # Store the result in a string
+    changed_files = result.stdout.strip().split("\n")
+    
+    return changed_files

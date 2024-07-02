@@ -39,10 +39,12 @@ class RefactoringAgent:
 
         If there is an opportunity to use a package or module to accomplish a task that is being done
         manually, do that.
+
+        Here are the important related files to the one that you are refactoring: {context}
         """
 
         # Define the user message within the prompt template
-        self.messages.append({"role": "user", "content": refactoring_prompt}
+        self.messages.append({"role": "user", "content": refactoring_prompt})
         
         # Invoke the model with the defined prompt template
         response = self.llm.invoke(self.messages)
