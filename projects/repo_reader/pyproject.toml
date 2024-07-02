@@ -114,6 +114,7 @@ wrapt = "*"
 XlsxWriter = "*"
 yarl = "*"
 zstandard = "*"
+# brew install dep-tree
 
 [tool.poetry.dev-dependencies]
 black = "^24.3.0"
