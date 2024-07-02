@@ -25,9 +25,25 @@ class RefactoringAgent:
             str: refactored code
         """
 
-        # Define the user message within the prompt template
-        self.messages.append({"role": "user", "content": f"Refactor the following code:\n\n{code_snippet}\n\nThese are how you refactored previous files, ensure you extend the functionality:\n\n{context}"})
+        # Setting the refactoring prompt
+        refactoring_prompt = """
+        Your job is to improve following code snippet: \n\n{code_snippet}
+        
+        If certain design patterns are used, maintain those as much as possible. Focus on functionality
+        and don't change things that already are optimal. Focus on adding things like: 
+        - typing
+        - better variable naming 
+        - comments
+        - linting
+        - error handling
 
+        If there is an opportunity to use a package or module to accomplish a task that is being done
+        manually, do that.
+        """
+
+        # Define the user message within the prompt template
+        self.messages.append({"role": "user", "content": refactoring_prompt}
+        
         # Invoke the model with the defined prompt template
         response = self.llm.invoke(self.messages)
 
