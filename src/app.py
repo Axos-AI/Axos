@@ -34,7 +34,14 @@ secure_headers = secure.Secure(
 @app.middleware("http")
 async def set_secure_headers(request, call_next):
     response = await call_next(request)
-    secure_headers.framework.fastapi(response)
+    # secure_headers.framework.fastapi(response)
+    # TODO: fix this, original like was working above
+    # Manually setting the headers using secure components
+    response.headers["Content-Security-Policy"] = str(csp)
+    response.headers["Strict-Transport-Security"] = str(hsts)
+    response.headers["Referrer-Policy"] = str(referrer)
+    response.headers["Cache-Control"] = str(cache_value)
+    response.headers["X-Frame-Options"] = str(x_frame_options)
     return response
 
 
