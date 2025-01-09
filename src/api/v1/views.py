@@ -15,6 +15,16 @@ from src.utils.file_handling import save_upload_file_temp
 router = APIRouter()
 
 
+# List of accepted video mime types
+ACCEPTED_MIME_TYPES = [
+    'video/mp4',
+    'video/mpeg',
+    'video/quicktime',
+    'video/x-msvideo',
+    'video/x-ms-wmv',
+    'video/webm'
+]
+
 
 
 @router.get("/health")
@@ -33,6 +43,16 @@ async def interpret_task(video: UploadFile = File(...)):
     Returns:
         JSONResponse: Returns {"status": "processing", "task_id": task.id} while the task is processing.
     """
+    if video.content_type not in ACCEPTED_MIME_TYPES:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": "Invalid file type",
+                "message": f"File must be a video. Received: {video.content_type}",
+                "accepted_types": ACCEPTED_MIME_TYPES
+            }
+        )
+
     temp_file_path = await save_upload_file_temp(video)
     task = interpret.delay(temp_file_path)
     return JSONResponse({"status": "processing", "task_id": task.id})
@@ -45,6 +65,16 @@ async def guage_prompt_adherance_task(video: UploadFile = File(...), prompt: str
     Returns:
         JSONResponse: Returns {"status": "processing", "task_id": task.id} while the task is processing.
     """
+    if video.content_type not in ACCEPTED_MIME_TYPES:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": "Invalid file type",
+                "message": f"File must be a video. Received: {video.content_type}",
+                "accepted_types": ACCEPTED_MIME_TYPES
+            }
+        )
+
     temp_file_path = await save_upload_file_temp(video)
     task = guage_prompt_adherance.delay(temp_file_path, prompt)
     return JSONResponse({"status": "processing", "task_id": task.id})
