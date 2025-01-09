@@ -1,6 +1,6 @@
-# Axos - Open Source Video Understanding API and Large Vision Model Observability Platform.
+# Shard - Open Source Video Understanding API and Large Vision Model Observability Platform.
 
-Axos is an open-source library designed to provide observability and video understanding capabilities for Large Vision Models (LVMs) like OpenAI's Sora. It helps developers monitor, analyze, and understand the behavior and performance of vision models in production.
+Shard is an open-source library designed to provide observability and video understanding capabilities for Large Vision Models (LVMs) like OpenAI's Sora. It helps developers monitor, analyze, and understand the behavior and performance of vision models in production.
 
 ## Features
 
@@ -15,8 +15,8 @@ Axos is an open-source library designed to provide observability and video under
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/Axos-AI/Axos.git
-cd Axos
+git clone https://github.com/Shard-AI/Shard.git
+cd Shard
 ```
 
 2. Install dependencies:
