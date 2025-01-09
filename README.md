@@ -19,8 +19,6 @@ git clone https://github.com/Axos-AI/Axos.git
 cd Axos
 ```
 
-````
-
 2. Install dependencies:
 
 ```bash
@@ -66,4 +64,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) f
 - Documentation: [Link to docs]
 - Issue Tracker: [GitHub Issues]
 - Discord Community: [Link to Discord]
-````
