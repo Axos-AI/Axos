@@ -6,3 +6,6 @@ create venv:
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+
+export env vars:
+source export_env.sh
