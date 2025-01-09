@@ -22,7 +22,8 @@ ACCEPTED_MIME_TYPES = [
     'video/quicktime',
     'video/x-msvideo',
     'video/x-ms-wmv',
-    'video/webm'
+    'video/webm',
+    'application/octet-stream'
 ]
 
 
