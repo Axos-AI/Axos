@@ -1,0 +1,12 @@
+fastapi
+starlette
+uvicorn
+celery
+PyJWT
+python-dotenv
+pymongo
+bson
+pandas
+secure
+playwright
+openai
