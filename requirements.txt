@@ -11,3 +11,6 @@ secure
 playwright
 openai
 google-generativeai
+markdown
+redis
+python-multipart
