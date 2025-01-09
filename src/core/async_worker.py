@@ -3,7 +3,7 @@
 import os
 import threading
 from celery import Celery
-from src.core.vision_model import interpret_video
+from src.core.vision_model import interpret_video, gauge_video_prompt_adherance
 from src.utils.file_handling import delete_file
 
 CHECK_EMAIL_LOCK = threading.Lock()
@@ -40,7 +40,7 @@ def gauge_prompt_adherance(video_path: str, prompt: str):
     try:
         # Process the video file here
         # Your video processing code goes here
-        result = gauge_prompt_adherance(video_path, prompt)
+        result = gauge_video_prompt_adherance(video_path, prompt)
         return result
     finally:
         # Clean up the temporary file

@@ -45,7 +45,7 @@ def interpret_video(video_path: str, model_prompt: str = interpret_video_prompt)
     # Markdown(response.text)
     return response.text
 
-def gauge_prompt_adherance(video_path: str, user_prompt: str, model_prompt: str = gauge_prompt_adherance_prompt):
+def gauge_video_prompt_adherance(video_path: str, user_prompt: str, model_prompt: str = gauge_prompt_adherance_prompt):
     """Gauge prompt adherance."""
     video_file = upload_video(video_path)
     final_prompt = f"{model_prompt} {user_prompt}"
