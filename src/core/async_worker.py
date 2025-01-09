@@ -19,7 +19,33 @@ else:
         backend=f"rediss://{REDIS_HOSTNAME}:{REDIS_PORT}/0?ssl_cert_reqs=CERT_REQUIRED",
     )
 
+@celery.task
+def interpret(video_path: str):
+    """Interpret a video."""
+    try:
+        # Process the video file here
+        # Your video processing code goes here
+        result = "result"  # Replace with actual processing
+        
+        return result
+    finally:
+        # Clean up the temporary file
+        if os.path.exists(video_path):
+            os.remove(video_path)
 
+@celery.task
+def guage_prompt_adherance(video_path: str, prompt: str):
+    """Gauge prompt adherance."""
+    try:
+        # Process the video file here
+        # Your video processing code goes here
+        result = "result"  # Replace with actual processing
+        
+        return result
+    finally:
+        # Clean up the temporary file
+        if os.path.exists(video_path):
+            os.remove(video_path)
 
 if __name__ == "__main__":
     options = {
