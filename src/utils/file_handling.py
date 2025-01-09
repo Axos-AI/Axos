@@ -24,3 +24,10 @@ async def save_upload_file_temp(upload_file: UploadFile) -> str:
         buffer.write(content)
     
     return temp_file_path 
+
+def delete_file(file_path: str):
+    """
+    Delete a file from the filesystem.
+    """
+    if os.path.exists(file_path):
+        os.remove(file_path)

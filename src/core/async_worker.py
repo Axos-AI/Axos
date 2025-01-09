@@ -4,6 +4,7 @@ import os
 import threading
 from celery import Celery
 from src.core.vision_model import interpret_video
+from src.utils.file_handling import delete_file
 
 CHECK_EMAIL_LOCK = threading.Lock()
 
@@ -31,8 +32,7 @@ def interpret(video_path: str):
         return result
     finally:
         # Clean up the temporary file
-        if os.path.exists(video_path):
-            os.remove(video_path)
+        delete_file(video_path)
 
 @celery.task
 def guage_prompt_adherance(video_path: str, prompt: str):
@@ -44,8 +44,7 @@ def guage_prompt_adherance(video_path: str, prompt: str):
         return result
     finally:
         # Clean up the temporary file
-        if os.path.exists(video_path):
-            os.remove(video_path)
+        delete_file(video_path)
 
 if __name__ == "__main__":
     options = {
