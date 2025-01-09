@@ -2,7 +2,6 @@
 
 import json
 from typing import List
-from celery import uuid
 from celery.result import AsyncResult
 from fastapi import APIRouter, Depends, Body, File, Query, Request, UploadFile
 from fastapi.responses import JSONResponse
@@ -26,23 +25,37 @@ async def health():
     """
     return JSONResponse({"text": "OK"})
 
+@router.post("/interpret")
+async def interpret(video: UploadFile = File(...)):
+    """
+    Interpret a video.
+    Returns:
+        JSONResponse: Returns {"status": "processing", "result": result} while the task is processing.
+    """
+    return JSONResponse({"status": "processing", "result": "result"})
 
 
-def return_task(task):
-    # Loop until the task is complete
-    while True:
-        task_async_result = AsyncResult(task.id, app=celery)
-        task_status = task_async_result.status
+@router.post("/guage_prompt_adherance")
+async def interpret(video: UploadFile = File(...), prompt: str = Body(...)):
+    """
+    Video report endpoint.
+    Returns:
+        JSONResponse: Returns {"status": "processing", "result": result} while the task is processing.
+    """
+    return JSONResponse({"status": "processing", "result": "result"})
 
-        if task_status == "SUCCESS":
-            # Retrieve the result of the task
-            result = task_async_result.result
-            return JSONResponse({"status": "complete", "result": result})
-        elif task_status == "FAILURE":
-            # Retrieve the exception info
-            result = task_async_result.result
-            return JSONResponse({"status": "error", "result": result})
-        else:
-            # Sleep for a short duration before checking again to avoid busy waiting
-            time.sleep(1)
-            continue
+@router.get("/task_status")
+async def task_status(task_id: str):
+    """
+    Get the status of a task.
+    Returns:
+        JSONResponse: Returns {"status": "complete", "result": result} if the task is complete.
+    """
+    task_async_result = AsyncResult(task_id, app=celery)
+
+    if task_async_result.ready():
+        # Retrieve the result of the task
+        result = task_async_result.result
+        return JSONResponse({"status": "complete", "result": result})
+    else:
+        return JSONResponse({"status": "processing"})
