@@ -1,4 +1,4 @@
-# Axos - Large Vision Model Observability Library
+# Axos - Open Source Video Understanding API and Large Vision Model Observability Platform.
 
 Axos is an open-source library designed to provide observability and video understanding capabilities for Large Vision Models (LVMs) like OpenAI's Sora. It helps developers monitor, analyze, and understand the behavior and performance of vision models in production.
 
@@ -15,8 +15,8 @@ Axos is an open-source library designed to provide observability and video under
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/axos-ai/axos.git
-cd axos
+git clone https://github.com/Axos-AI/Axos.git
+cd Axos
 ```
 
 ````
