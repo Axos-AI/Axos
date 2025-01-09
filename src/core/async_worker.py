@@ -3,6 +3,7 @@
 import os
 import threading
 from celery import Celery
+from src.core.vision_model import interpret_video
 
 CHECK_EMAIL_LOCK = threading.Lock()
 
@@ -25,8 +26,7 @@ def interpret(video_path: str):
     try:
         # Process the video file here
         # Your video processing code goes here
-        result = "result"  # Replace with actual processing
-        
+        result = interpret_video(video_path)
         return result
     finally:
         # Clean up the temporary file
@@ -39,8 +39,7 @@ def guage_prompt_adherance(video_path: str, prompt: str):
     try:
         # Process the video file here
         # Your video processing code goes here
-        result = "result"  # Replace with actual processing
-        
+        result = guage_prompt_adherance(video_path, prompt)
         return result
     finally:
         # Clean up the temporary file
