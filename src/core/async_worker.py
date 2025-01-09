@@ -35,12 +35,12 @@ def interpret(video_path: str):
         delete_file(video_path)
 
 @celery.task
-def guage_prompt_adherance(video_path: str, prompt: str):
+def gauge_prompt_adherance(video_path: str, prompt: str):
     """Gauge prompt adherance."""
     try:
         # Process the video file here
         # Your video processing code goes here
-        result = guage_prompt_adherance(video_path, prompt)
+        result = gauge_prompt_adherance(video_path, prompt)
         return result
     finally:
         # Clean up the temporary file

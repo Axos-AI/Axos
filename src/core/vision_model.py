@@ -13,7 +13,7 @@ model = genai.GenerativeModel(model_name="gemini-1.5-pro")
 
 # Create the prompt.
 interpret_video_prompt = "Summarize this video."
-guage_prompt_adherance_prompt = "Summarize this video. Then determine if the given prompt aligns with the video:"
+gauge_prompt_adherance_prompt = "Summarize this video. Then determine if the given prompt aligns with the video:"
 
 
 def upload_video(video_path: str):
@@ -45,7 +45,7 @@ def interpret_video(video_path: str, model_prompt: str = interpret_video_prompt)
     # Markdown(response.text)
     return response.text
 
-def guage_prompt_adherance(video_path: str, user_prompt: str, model_prompt: str = guage_prompt_adherance_prompt):
+def gauge_prompt_adherance(video_path: str, user_prompt: str, model_prompt: str = gauge_prompt_adherance_prompt):
     """Gauge prompt adherance."""
     video_file = upload_video(video_path)
     final_prompt = f"{model_prompt} {user_prompt}"

@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 import time
 import uuid
 
-from src.core.async_worker import celery, interpret, guage_prompt_adherance
+from src.core.async_worker import celery, interpret, gauge_prompt_adherance
 from src.utils.dependencies import validate_token
 from src.utils.file_handling import save_upload_file_temp
 
@@ -58,9 +58,8 @@ async def interpret_task(video: UploadFile = File(...)):
     task = interpret.delay(temp_file_path)
     return JSONResponse({"status": "processing", "task_id": task.id})
 
-
-@router.post("/guage_prompt_adherance")
-async def guage_prompt_adherance_task(video: UploadFile = File(...), prompt: str = Body(...)):
+@router.post("/gauge_prompt_adherance")
+async def gauge_prompt_adherance_task(video: UploadFile = File(...), prompt: str = Body(...)):
     """
     Video report endpoint.
     Returns:
@@ -77,7 +76,7 @@ async def guage_prompt_adherance_task(video: UploadFile = File(...), prompt: str
         )
 
     temp_file_path = await save_upload_file_temp(video)
-    task = guage_prompt_adherance.delay(temp_file_path, prompt)
+    task = gauge_prompt_adherance.delay(temp_file_path, prompt)
     return JSONResponse({"status": "processing", "task_id": task.id})
 
 @router.get("/task_status")
