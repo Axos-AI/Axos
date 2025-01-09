@@ -85,13 +85,24 @@ async def task_status(task_id: str):
     """
     Get the status of a task.
     Returns:
-        JSONResponse: Returns {"status": "complete", "result": result} if the task is complete.
+        JSONResponse: Returns task status and result/error information
     """
     task_async_result = AsyncResult(task_id, app=celery)
 
     if task_async_result.ready():
-        # Retrieve the result of the task
-        result = task_async_result.result
-        return JSONResponse({"status": "complete", "result": result})
+        try:
+            # Get the result, but handle potential errors
+            result = task_async_result.get()
+            return JSONResponse({
+                "status": "complete",
+                "result": result
+            })
+        except Exception as e:
+            # Handle any errors that occurred during task execution
+            return JSONResponse({
+                "status": "error",
+                "error": str(e),
+                "error_type": type(e).__name__
+            }, status_code=500)
     else:
         return JSONResponse({"status": "processing"})
