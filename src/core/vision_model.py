@@ -42,7 +42,7 @@ def interpret_video(video_path: str, model_prompt: str = interpret_video_prompt)
                                     request_options={"timeout": 600})
     video_file.delete()
     # Print the response, rendering any Markdown
-    Markdown(response.text)
+    # Markdown(response.text)
     return response.text
 
 def guage_prompt_adherance(video_path: str, user_prompt: str, model_prompt: str = guage_prompt_adherance_prompt):
@@ -52,5 +52,5 @@ def guage_prompt_adherance(video_path: str, user_prompt: str, model_prompt: str 
     response = model.generate_content([video_file, final_prompt],
                                     request_options={"timeout": 600})
     video_file.delete()
-    Markdown(response.text)
+    # Markdown(response.text)
     return response.text
