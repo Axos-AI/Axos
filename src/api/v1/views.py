@@ -8,8 +8,9 @@ from fastapi.responses import JSONResponse
 import time
 import uuid
 
-from core.async_worker import celery
+from core.async_worker import celery, interpret, guage_prompt_adherance
 from utils.dependencies import validate_token
+from src.utils.file_handling import save_upload_file_temp
 
 router = APIRouter()
 
@@ -26,23 +27,26 @@ async def health():
     return JSONResponse({"text": "OK"})
 
 @router.post("/interpret")
-async def interpret(video: UploadFile = File(...)):
+async def interpret_task(video: UploadFile = File(...)):
     """
     Interpret a video.
     Returns:
-        JSONResponse: Returns {"status": "processing", "result": result} while the task is processing.
+        JSONResponse: Returns {"status": "processing", "task_id": task.id} while the task is processing.
     """
-    return JSONResponse({"status": "processing", "result": "result"})
+    temp_file_path = await save_upload_file_temp(video)
+    task = interpret.delay(temp_file_path)
+    return JSONResponse({"status": "processing", "task_id": task.id})
 
 
 @router.post("/guage_prompt_adherance")
-async def interpret(video: UploadFile = File(...), prompt: str = Body(...)):
+async def guage_prompt_adherance_task(video: UploadFile = File(...), prompt: str = Body(...)):
     """
     Video report endpoint.
     Returns:
-        JSONResponse: Returns {"status": "processing", "result": result} while the task is processing.
+        JSONResponse: Returns {"status": "processing", "task_id": task.id} while the task is processing.
     """
-    return JSONResponse({"status": "processing", "result": "result"})
+    task = guage_prompt_adherance.delay(video.file.name, prompt)
+    return JSONResponse({"status": "processing", "task_id": task.id})
 
 @router.get("/task_status")
 async def task_status(task_id: str):
