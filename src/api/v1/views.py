@@ -8,8 +8,8 @@ from fastapi.responses import JSONResponse
 import time
 import uuid
 
-from core.async_worker import celery, interpret, guage_prompt_adherance
-from utils.dependencies import validate_token
+from src.core.async_worker import celery, interpret, guage_prompt_adherance
+from src.utils.dependencies import validate_token
 from src.utils.file_handling import save_upload_file_temp
 
 router = APIRouter()
@@ -45,7 +45,8 @@ async def guage_prompt_adherance_task(video: UploadFile = File(...), prompt: str
     Returns:
         JSONResponse: Returns {"status": "processing", "task_id": task.id} while the task is processing.
     """
-    task = guage_prompt_adherance.delay(video.file.name, prompt)
+    temp_file_path = await save_upload_file_temp(video)
+    task = guage_prompt_adherance.delay(temp_file_path, prompt)
     return JSONResponse({"status": "processing", "task_id": task.id})
 
 @router.get("/task_status")
