@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 import time
 import uuid
 
-from core.celery_worker import celery
+from core.async_worker import celery
 from utils.dependencies import validate_token
 
 router = APIRouter()
