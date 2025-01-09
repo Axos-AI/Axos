@@ -7,8 +7,9 @@ from src.core.vision_model import interpret_video
 
 CHECK_EMAIL_LOCK = threading.Lock()
 
-REDIS_HOSTNAME = os.getenv("REDIS_HOSTNAME")
-REDIS_PORT = os.getenv("REDIS_PORT")
+# Set default values for Redis configuration
+REDIS_HOSTNAME = os.getenv("REDIS_HOSTNAME", "localhost")
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")  # Default Redis port
 
 if REDIS_HOSTNAME == "localhost":
     celery = Celery("tasks", broker="redis://localhost:6379/0", backend="redis://localhost:6379/0")
