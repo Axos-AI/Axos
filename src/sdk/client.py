@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 
 from src.sdk.exceptions import APIError, TaskError, TaskFailedError, ValidationError, VideoNotFoundError
@@ -18,22 +19,25 @@ class ShardClient:
         try:
             with open(video_path, 'rb') as f:
                 if os.path.getsize(video_path) == 0:
-                    raise ValueError("File is empty")
+                    raise VideoNotFoundError("File is empty")
                 files = {'video': f}
                 response = requests.post(f"{self.api_url}/interpret", files=files, headers=headers)
 
                 if response.status_code != 200:
                     raise APIError(f"Error: {response.json().get('error', 'Unknown error')}")
                 task_id = response.json()['task_id']
-                task_response = requests.get(f"{self.api_url}/task/{task_id}", headers=headers)
-                if task_response.status_code != 200:
-                    raise TaskError(f"Error: {task_response.json().get('error', 'Unknown error')}")
-                if task_response.json().get('status') == 'failed':
-                    raise TaskFailedError(f"Error: {task_response.json().get('error', 'Unknown error')}")
-                return task_response.json().get('result')
+                while True:
+                    task_response = requests.get(f"{self.api_url}/task/{task_id}", headers=headers)
+                    if task_response.status_code != 200:
+                        raise TaskError(f"Error: {task_response.json().get('error', 'Unknown error')}")
+                    if task_response.json().get('status') == 'failed':
+                        raise TaskFailedError(f"Error: {task_response.json().get('error', 'Unknown error')}")
+                    if task_response.json().get('status') == 'complete':
+                        return task_response.json().get('result')
+                    time.sleep(5)
             
         except Exception as e:
-            raise VideoNotFoundError(f"Error: {e}")
+            raise e
         
             
         # Option 2: Direct processing
