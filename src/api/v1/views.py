@@ -5,27 +5,12 @@ from typing import List
 from celery.result import AsyncResult
 from fastapi import APIRouter, Depends, Body, File, Query, Request, UploadFile
 from fastapi.responses import JSONResponse
-import time
-import uuid
 
 from src.core.async_worker import celery, interpret, gauge_prompt_adherance
 from src.utils.dependencies import validate_token
-from src.utils.file_handling import save_upload_file_temp
+from src.utils.file_handling import ACCEPTED_MIME_TYPES, save_upload_file_temp, validate_file_type
 
 router = APIRouter()
-
-
-# List of accepted video mime types
-ACCEPTED_MIME_TYPES = [
-    'video/mp4',
-    'video/mpeg',
-    'video/quicktime',
-    'video/x-msvideo',
-    'video/x-ms-wmv',
-    'video/webm',
-    'application/octet-stream'
-]
-
 
 
 @router.get("/health")
@@ -44,19 +29,29 @@ async def interpret_task(video: UploadFile = File(...)):
     Returns:
         JSONResponse: Returns {"status": "processing", "task_id": task.id} while the task is processing.
     """
-    if video.content_type not in ACCEPTED_MIME_TYPES:
+    try:
+        temp_file_path = await save_upload_file_temp(video)
+        if not video.content_type and video.content_type == 'application/octet-stream':
+            if not validate_file_type(temp_file_path):
+                print(f"Invalid file type: {video.content_type}")
+                return JSONResponse(
+                    status_code=400,
+                    content={
+                        "error": "Invalid file type",
+                        "message": f"File must be a video. Received: {video.content_type}",
+                        "accepted_types": ACCEPTED_MIME_TYPES
+                    }
+                )
+            
+        task = interpret.delay(temp_file_path)
+        return JSONResponse({"status": "processing", "task_id": task.id})
+    except Exception as e:
         return JSONResponse(
-            status_code=400,
-            content={
-                "error": "Invalid file type",
-                "message": f"File must be a video. Received: {video.content_type}",
-                "accepted_types": ACCEPTED_MIME_TYPES
-            }
+            status_code=500,
+            content={"error": str(e)}
         )
 
-    temp_file_path = await save_upload_file_temp(video)
-    task = interpret.delay(temp_file_path)
-    return JSONResponse({"status": "processing", "task_id": task.id})
+
 
 @router.post("/gauge_prompt_adherance")
 async def gauge_prompt_adherance_task(video: UploadFile = File(...), prompt: str = Body(...)):
@@ -65,19 +60,27 @@ async def gauge_prompt_adherance_task(video: UploadFile = File(...), prompt: str
     Returns:
         JSONResponse: Returns {"status": "processing", "task_id": task.id} while the task is processing.
     """
-    if video.content_type not in ACCEPTED_MIME_TYPES:
-        return JSONResponse(
-            status_code=400,
-            content={
-                "error": "Invalid file type",
-                "message": f"File must be a video. Received: {video.content_type}",
-                "accepted_types": ACCEPTED_MIME_TYPES
-            }
-        )
+    try:
+        temp_file_path = await save_upload_file_temp(video)
+        if not video.content_type and video.content_type == 'application/octet-stream':
+            if not validate_file_type(temp_file_path):
+                print(f"Invalid file type: {video.content_type}")
+                return JSONResponse(
+                    status_code=400,
+                    content={
+                        "error": "Invalid file type",
+                        "message": f"File must be a video. Received: {video.content_type}",
+                        "accepted_types": ACCEPTED_MIME_TYPES
+                    }
+                )
 
-    temp_file_path = await save_upload_file_temp(video)
-    task = gauge_prompt_adherance.delay(temp_file_path, prompt)
-    return JSONResponse({"status": "processing", "task_id": task.id})
+        task = gauge_prompt_adherance.delay(temp_file_path, prompt)
+        return JSONResponse({"status": "processing", "task_id": task.id})
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"error": str(e)}
+        )
 
 @router.get("/task/{task_id}")
 async def task(task_id: str):
