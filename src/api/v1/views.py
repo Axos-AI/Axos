@@ -79,8 +79,8 @@ async def gauge_prompt_adherance_task(video: UploadFile = File(...), prompt: str
     task = gauge_prompt_adherance.delay(temp_file_path, prompt)
     return JSONResponse({"status": "processing", "task_id": task.id})
 
-@router.get("/task_status")
-async def task_status(task_id: str):
+@router.get("/task/{task_id}")
+async def task(task_id: str):
     """
     Get the status of a task.
     Returns:
