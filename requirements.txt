@@ -14,3 +14,4 @@ google-generativeai
 markdown
 redis
 python-multipart
+pydantic
