@@ -1,6 +1,6 @@
 import logging
 import secure
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from src.api.v1.views import router as v1_router
@@ -66,13 +66,24 @@ async def http_exception_handler(request, exc):
 async def log_requests(request: Request, call_next):
     try:
         body = await request.body()
-        if request.headers.get('content-type') == 'application/json':
+        content_type = request.headers.get('content-type', '')
+        
+        if 'application/json' in content_type:
             print(f"Request body: {body.decode('utf-8')}")
+        elif 'multipart/form-data' in content_type and 'boundary=' in content_type:
+            # Only try to parse form data if it has a proper boundary
+            form = await request.form()
+            for key, value in form.items():
+                if not isinstance(value, UploadFile):
+                    print(f"{key}: {value}")
+                else:
+                    print(f"{key}: {value.filename}, {value.content_type}, {value.size} bytes")
         else:
-            print("Request body contains binary data, logging is skipped.")
-    except UnicodeDecodeError as e:
-        logging.error(f"UnicodeDecodeError: {e}")
-        print("Failed to decode request body, it may contain binary data.")
+            print(f"Request content-type: {content_type}, skipping logging.")
+    except Exception as e:
+        logging.error(f"Error logging request: {str(e)}")
+        # Don't let logging errors affect the actual request
+        pass
 
     response = await call_next(request)
     return response
