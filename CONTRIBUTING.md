@@ -21,17 +21,17 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 
 ## Pull Request Process
 
-1. Update the README.md with details of changes to the interface
+1. Update the documentation with details of changes to the interface
 2. Update the requirements.txt if you've added new dependencies
-3. The PR will be merged once you have the sign-off of at least one other developer
+3. The PR will be merged once you have the sign-off of at least one maintainer
 
 ## Any contributions you make will be under the MIT Software License
 
 In short, when you submit code changes, your submissions are understood to be under the same [MIT License](LICENSE) that covers the project. Feel free to contact the maintainers if that's a concern.
 
-## Report bugs using GitHub's [issue tracker]
+## Report bugs using [GitHub Issues](https://github.com/Shard-AI/Shard/issues)
 
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue]().
+We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/Shard-AI/Shard/issues/new).
 
 ## Write bug reports with detail, background, and sample code
 
