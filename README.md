@@ -10,7 +10,22 @@ Shard is an open-source library designed to provide observability and video unde
 - Integration with Popular Vision Models
 - Observability Metrics and Dashboards
 
-## Installation and Development Setup
+## Quick Start
+
+```python
+from src.sdk import Shard
+
+# Initialize the client
+client = Shard("your_api_key_here")
+
+# Interpret a video
+response = client.interpret("/absolute/path/to/video.mp4")
+
+# Analyze prompt adherence
+analysis = client.gauge_prompt_adherance("/absolute/path/to/video.mp4", "your prompt here")
+```
+
+## Installation
 
 1. Clone the repository:
 
@@ -19,7 +34,7 @@ git clone https://github.com/Shard-AI/Shard.git
 cd Shard
 ```
 
-2. Configure your virtual environment and install dependencies:
+2. Set up your environment:
 
 ```bash
 python -m venv .venv
@@ -27,50 +42,24 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Copy the environment variables file:
+3. Configure environment variables:
 
 ```bash
 cp .env.example .env
-
-```
-
-4. Set up your API keys in the .env file:
-
-```
-GEMINI_API_KEY=your_gemini_api_key_here
-REDIS_HOSTNAME=localhost
-REDIS_PORT=6379
-```
-
-5. Export the environment variables:
-
-```bash
+# Edit .env with your configuration
 source export_env.sh
 ```
 
-6. Run the API Server:
+6. Run the API (in two terminals):
 
 ```bash
 uvicorn src.app:app --host 0.0.0.0 --port 8000 --reload
-```
-
-7. Run the Asynchronous Worker:
-
-```bash
 celery -A src.core.async_worker worker --loglevel=info --pool=threads
 ```
 
-## Quick Start
+## Documentation
 
-```python
-from axos import VideoAnalyzer
-
-# Initialize the analyzer
-analyzer = VideoAnalyzer()
-
-# Analyze a video
-results = analyzer.analyze("path/to/video.mp4")
-```
+Visit our [documentation](https://docs.shard.video) for detailed guides and API reference.
 
 ## Contributing
 
@@ -82,7 +71,4 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## Support
 
-- Documentation: [docs.shard.video](https://docs.shard.video)
-- Issue Tracker: [GitHub Issues](https://github.com/Shard-AI/Shard/issues)
-- Contact: [founders@shard.video](mailto:founders@shard.video)
-<!-- - Discord Community: [Link to Discord](https://discord.gg/shard) -->
+Contact us at [founders@shard.video](mailto:founders@shard.video)
