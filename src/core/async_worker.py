@@ -26,24 +26,22 @@ else:
 def interpret(video_path: str):
     """Interpret a video."""
     try:
-        # Process the video file here
-        # Your video processing code goes here
         result = interpret_video(video_path)
         return result
+    except Exception as e:
+        raise e
     finally:
-        # Clean up the temporary file
         delete_file(video_path)
 
 @celery.task
 def gauge_prompt_adherance(video_path: str, prompt: str):
     """Gauge prompt adherance."""
     try:
-        # Process the video file here
-        # Your video processing code goes here
         result = gauge_video_prompt_adherance(video_path, prompt)
         return result
+    except Exception as e:
+        raise e
     finally:
-        # Clean up the temporary file
         delete_file(video_path)
 
 if __name__ == "__main__":
