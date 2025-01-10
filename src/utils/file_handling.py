@@ -1,6 +1,9 @@
+import mimetypes
 import os
 import uuid
 from fastapi import UploadFile
+
+from src.sdk.exceptions import FileTypeNotFoundError, InvalidFileTypeError
 
 async def save_upload_file_temp(upload_file: UploadFile) -> str:
     """
@@ -31,3 +34,33 @@ def delete_file(file_path: str):
     """
     if os.path.exists(file_path):
         os.remove(file_path)
+
+
+# List of accepted video mime types by Google Gemini API
+ACCEPTED_MIME_TYPES = [
+    'video/mp4',
+    'video/mpeg',
+    'video/mov',
+    'video/avi',
+    'video/x-flv',
+    'video/mpg',
+    'video/webm',
+    'video/wmv',
+    'video/3gpp',
+]
+
+def validate_file_type(file_path: str) -> bool:
+    
+    file_type = guess_file_type(file_path)
+    if file_type is None:
+        raise FileTypeNotFoundError(f"Failed to guess file type for {file_path}")
+    if not is_valid_file_type(file_type):
+        raise InvalidFileTypeError(f"Invalid file type: {file_type}")
+    return True
+
+def is_valid_file_type(file_type: str) -> bool:
+    return file_type in ACCEPTED_MIME_TYPES
+
+def guess_file_type(file_path: str) -> str | None:
+    content_type, _ = mimetypes.guess_type(file_path)
+    return content_type
