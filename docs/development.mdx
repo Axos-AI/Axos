@@ -1,103 +1,87 @@
 ---
-title: 'Development'
-description: 'Preview changes locally to update your docs'
+title: "Development"
+description: "Set up your development environment"
 ---
 
-<Info>
-  **Prerequisite**: Please install Node.js (version 19 or higher) before proceeding.
-</Info>
+# Development Guide
 
-Follow these steps to install and run Mintlify on your operating system:
+## Environment Setup
 
-**Step 1**: Install Mintlify:
-
-<CodeGroup>
-  ```bash npm
-  npm i -g mintlify
-  ```
-
-  ```bash yarn
-  yarn global add mintlify
-  ```
-</CodeGroup>
-
-**Step 2**: Navigate to the docs directory (where the `mint.json` file is located) and execute the following command:
+1. Clone and set up the repository:
 
 ```bash
-mintlify dev
+git clone https://github.com/Shard-AI/Shard.git
+cd Shard
 ```
 
-A local preview of your documentation will be available at `http://localhost:3000`.
-
-### Custom Ports
-
-By default, Mintlify uses port 3000. You can customize the port Mintlify runs on by using the `--port` flag. To run Mintlify on port 3333, for instance, use this command:
+2. Configure your virtual environment:
 
 ```bash
-mintlify dev --port 3333
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-If you attempt to run Mintlify on a port that's already in use, it will use the next available port:
-
-```md
-Port 3000 is already in use. Trying 3001 instead.
-```
-
-## Mintlify Versions
-
-Please note that each CLI release is associated with a specific version of Mintlify. If your local website doesn't align with the production version, please update the CLI:
-
-<CodeGroup>
-  ```bash npm
-  npm i -g mintlify@latest
-  ```
-
-  ```bash yarn
-  yarn global upgrade mintlify
-  ```
-</CodeGroup>
-
-## Validating Links
-
-The CLI can assist with validating reference links made in your documentation. To identify any broken links, use the following command:
+3. Configure environment variables:
 
 ```bash
-mintlify broken-links
+cp .env.example .env
 ```
 
-## Deployment
+Edit `.env` with your credentials:
 
-<Tip>
-  Unlimited editors available under the [Pro
-  Plan](https://mintlify.com/pricing) and above.
-</Tip>
+```
+GEMINI_API_KEY=your_gemini_api_key_here
+REDIS_HOSTNAME=localhost
+REDIS_PORT=6379
+```
 
-If the deployment is successful, you should see the following:
+## Running the Services
 
-<Frame>
-  <img src="/images/checks-passed.png" style={{ borderRadius: '0.5rem' }} />
-</Frame>
+### API Server
 
-## Code Formatting
+```bash
+uvicorn src.app:app --host 0.0.0.0 --port 8000 --reload
+```
 
-We suggest using extensions on your IDE to recognize and format MDX. If you're a VSCode user, consider the [MDX VSCode extension](https://marketplace.visualstudio.com/items?itemName=unifiedjs.vscode-mdx) for syntax highlighting, and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for code formatting.
+### Async Worker
 
-## Troubleshooting
+```bash
+celery -A src.core.async_worker worker --loglevel=info --pool=threads
+```
 
-<AccordionGroup>
-  <Accordion title="Error: Could not load the &#x22;sharp&#x22; module using the darwin-arm64 runtime">
-    This may be due to an outdated version of node. Try the following:
+## API Testing
 
-    1. Remove the currently-installed version of mintlify: `npm remove -g mintlify`
+Test the API directly using curl:
 
-    2. Upgrade to Node v19 or higher.
+```bash
+curl --request POST -F "video=@path/to/your/video.mp4" http://localhost:8000/v1/interpret
+```
 
-    3. Reinstall mintlify: `npm install -g mintlify`
-  </Accordion>
+## SDK Usage
 
-  <Accordion title="Issue: Encountering an unknown error">
-    Solution: Go to the root of your device and delete the \~/.mintlify folder. Afterwards, run `mintlify dev` again.
-  </Accordion>
-</AccordionGroup>
+```python
+from src.sdk import Shard
 
-Curious about what changed in the CLI version? [Check out the CLI changelog.](https://www.npmjs.com/package/mintlify?activeTab=versions)
+client = Shard("your_api_key_here")
+
+# Video interpretation
+response = client.interpret("path/to/video.mp4")
+
+# Prompt adherence analysis
+analysis = client.gauge_prompt_adherance("path/to/video.mp4", "your prompt here")
+```
+
+## Supported File Types
+
+The API accepts the following video formats:
+
+- MP4 (.mp4)
+- MPEG (.mpeg)
+- MOV (.mov)
+- AVI (.avi)
+- FLV (.flv)
+- MPG (.mpg)
+- WebM (.webm)
+- WMV (.wmv)
+- 3GPP (.3gp)
