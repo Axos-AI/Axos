@@ -3,8 +3,6 @@ title: "Development"
 description: "Set up your development environment"
 ---
 
-# Development Guide
-
 ## Environment Setup
 
 1. Clone and set up the repository:
@@ -38,13 +36,15 @@ REDIS_PORT=6379
 
 ## Running the Services
 
-### API Server
+Run the API and asynchronous worker in two seperate terminals:
+
+#### API Server
 
 ```bash
 uvicorn src.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### Async Worker
+#### Async Worker
 
 ```bash
 celery -A src.core.async_worker worker --loglevel=info --pool=threads
