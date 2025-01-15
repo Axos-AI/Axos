@@ -3,6 +3,7 @@
 import os
 import threading
 from celery import Celery
+from src.core.metrics.temporal_coherence import process_single_video
 from src.core.vision_model import interpret_video, gauge_video_prompt_adherance
 from src.utils.file_handling import delete_file
 
@@ -38,6 +39,17 @@ def gauge_prompt_adherance(video_path: str, prompt: str):
     """Gauge prompt adherance."""
     try:
         result = gauge_video_prompt_adherance(video_path, prompt)
+        return result
+    except Exception as e:
+        raise e
+    finally:
+        delete_file(video_path)
+
+@celery.task
+def temporal_coherence(video_path: str):
+    """Temporal coherence."""
+    try:
+        result = process_single_video(video_path)
         return result
     except Exception as e:
         raise e

@@ -6,7 +6,7 @@ from celery.result import AsyncResult
 from fastapi import APIRouter, Depends, Body, File, Query, Request, UploadFile
 from fastapi.responses import JSONResponse
 
-from src.core.async_worker import celery, interpret, gauge_prompt_adherance
+from src.core.async_worker import celery, interpret, gauge_prompt_adherance, temporal_coherence
 from src.utils.dependencies import validate_token
 from src.utils.file_handling import ACCEPTED_MIME_TYPES, save_upload_file_temp, validate_file_type
 
@@ -75,6 +75,36 @@ async def gauge_prompt_adherance_task(video: UploadFile = File(...), prompt: str
                 )
 
         task = gauge_prompt_adherance.delay(temp_file_path, prompt)
+        return JSONResponse({"status": "processing", "task_id": task.id})
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"error": str(e)}
+        )
+    
+
+@router.post("/temporal_coherence")
+async def temporal_coherence_task(video: UploadFile = File(...)):
+    """
+    Video report endpoint.
+    Returns:
+        JSONResponse: Returns {"status": "processing", "task_id": task.id} while the task is processing.
+    """
+    try:
+        temp_file_path = await save_upload_file_temp(video)
+        if not video.content_type and video.content_type == 'application/octet-stream':
+            if not validate_file_type(temp_file_path):
+                print(f"Invalid file type: {video.content_type}")
+                return JSONResponse(
+                    status_code=400,
+                    content={
+                        "error": "Invalid file type",
+                        "message": f"File must be a video. Received: {video.content_type}",
+                        "accepted_types": ACCEPTED_MIME_TYPES
+                    }
+                )
+
+        task = temporal_coherence.delay(temp_file_path)
         return JSONResponse({"status": "processing", "task_id": task.id})
     except Exception as e:
         return JSONResponse(
